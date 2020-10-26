@@ -252,21 +252,6 @@ public final class Analyser {
      * @throws CompileError
      */
     private void analyseVariableDeclaration() throws CompileError {
-//<<<<<<< HEAD
-//        // 如果下一个 token 是 var 就继续
-//        while (nextIf(TokenType.Var) != null) {
-//            // 变量名
-//            var nameToken = expect(TokenType.Ident);
-//
-//            // 等于号
-//            expect(TokenType.Equal);
-//
-//            // 表达式
-//            analyseExpression();
-//
-//            // 分号
-//            expect(TokenType.Semicolon);
-//=======
         // 变量声明 -> 变量声明语句*
 
         // 如果下一个 token 是 var 就继续
@@ -277,16 +262,21 @@ public final class Analyser {
             boolean initialized = false;
 
             // 下个 token 是等于号吗？如果是的话分析初始化
-            expect(TokenType.Equal);
-            // 分析初始化的表达式
-            analyseExpression();
+            if(check(TokenType.Equal)){
+                expect(TokenType.Equal);
+                // 分析初始化的表达式
+                analyseExpression();
+                // 初始化变量
+                initialized = true;
+            }
+
 
             // 分号
             expect(TokenType.Semicolon);
 
             // 加入符号表，请填写名字和当前位置（报错用）
             String name = nameToken.getValueString();
-            addSymbol(name, false, false, /* 当前位置 */ null);
+            addSymbol(name, initialized, false, /* 当前位置 */ null);
 
             // 如果没有初始化的话在栈里推入一个初始值
             if (!initialized) {
